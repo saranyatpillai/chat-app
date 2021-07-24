@@ -1,0 +1,71 @@
+<div class="card mb-sm-3 mb-md-0 contacts_card">
+  <div class="card-header">
+      <div class="d-flex bd-highlight" (click)="clearContacts()">
+          <div class="img_cont">
+              <img src="./assets/images/no_profilepic.png" class="rounded-circle user_img">
+              <span class="online_icon"></span>
+          </div>
+          <div class="user_info flex-grow-1">
+              <span>{{userName}}</span>
+          </div>
+          <div class="p-3">
+              <button class="logout-btn" (click)="logout()">
+                  <i class="fa fa-sign-out" aria-hidden="true"></i>
+                  Logout
+              </button>
+          </div>
+      </div>
+      <!-- <div class="input-group">
+          <input type="text" placeholder="Search..." name="" class="form-control search">
+          <div class="input-group-prepend">
+              <span class="input-group-text search_btn"><i class="fa fa-search"></i></span>
+          </div>
+      </div> -->
+  </div>
+  <div class="card-body contacts_body">
+      <ul class="contacts mb-0" *ngFor="let user of chatService.userList">
+      <li (click)="setReceiver(user.userName)" [ngClass]="{'active': chatService.receiver === user.userName}"
+      class="ct-pointer">
+          <div class="d-flex bd-highlight">
+              <div class="img_cont">
+                  <img src="./assets/images/no_profilepic.png" class="rounded-circle user_img">
+                  <span *ngIf="user?.isActive" class="online_icon"></span>
+                  <span *ngIf="!user?.isActive" class="online_icon offline"></span>
+              </div>
+              <div class="user_info">
+                  <span>{{user?.userName}}</span>
+
+              <div class="typing-indicator" *ngIf="chatService.typingList[user.userName]">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              </div>
+          </div>
+      </li>
+      </ul>
+      <ul class="contacts mb-0" *ngFor="let group of chatService.groups">
+        <li (click)="setgrpchat(group)"  [ngClass]="{'active': chatService.room === group.room}"
+        class="ct-pointer">
+            <div class="d-flex bd-highlight">
+                <div class="img_cont">
+                    <img src="./assets/images/no_profilepic.png" class="rounded-circle user_img">
+                </div>
+                <div class="user_info">
+                    <span>{{group.grpname}}</span>
+                    <ng-container *ngIf="chatService.typingList[group.id] &&
+                     chatService.typingList[group.id]?.sender !== chatService.sender">
+                        <div class="typing-indicator d-flex">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <p class="ml-2">{{chatService.typingList[group.id]?.sender}} is typing</p>
+                          </div>
+                    </ng-container>
+                </div>
+            </div>
+        </li>
+        </ul>
+  </div>
+  <div class="card-footer"></div>
+</div>
