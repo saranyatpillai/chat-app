@@ -1,0 +1,124 @@
+<div class="card">
+    <ng-container *ngIf="chatService.receiver || chatService.room">
+        <div class="card-header msg_head">
+            <div class="d-flex bd-highlight">
+                <div class="img_cont">
+                    <img src="./assets/images/no_profilepic.png" class="rounded-circle user_img">
+                </div>
+                <div class="user_info">
+                    <span>
+                        {{chatService.receiver ? 'Chat with ' + chatService.receiver : 'Chat in ' +
+                        chatService.grp.grpname}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body msg_card_body">
+            <ng-container *ngFor="let data of chatService.outputChats[chatService.keyName]">
+                <div class="d-flex justify-content-start mb-4" *ngIf="chatService.sender !== data.sender">
+                    <div class="msg_cotainer" *ngIf="data.message || data.files.length || data.images.length">
+                        {{data.message}}
+                        <ng-container *ngFor="let image of data.images">
+                            <img src="{{image?.file}}" alt="{{image?.fileName}}" height="150" width="150"
+                                class="mb-1 d-block" (click)="openFileInNewTab(image, 'IMAGE')">
+                        </ng-container>
+                        <ng-container *ngFor="let file of data.files">
+                            <div class="chip d-block mb-1" *ngIf="!file.isVideo">
+                                {{file?.fileName}}
+                                <span class="closebtn" (click)="openFileInNewTab(file, 'FILE')">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            <video width="320" height="240" controls *ngIf="file.isVideo">
+                                <source src="{{file.file}}" type="video/mp4">
+                                <source src="{{file.file}}" type="video/ogg">
+                                Your browser does not support the video tag.
+                            </video>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mb-4" *ngIf="chatService.sender == data.sender">
+                    <div class="msg_cotainer_send" *ngIf="data.message || data.files.length || data.images.length">
+                        {{data.message}}
+                        <ng-container *ngFor="let image of data.images">
+                            <img src="{{image?.file}}" alt="{{image?.fileName}}" height="150" width="150"
+                                class="mb-1 d-block" (click)="openFileInNewTab(image, 'IMAGE')">
+                        </ng-container>
+                        <ng-container *ngFor="let file of data.files">
+                            <div class="chip d-block mb-1" *ngIf="!file.isVideo">
+                                {{file?.fileName}}
+                                <span class="closebtn" (click)="openFileInNewTab(file, 'FILE')">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            <video width="320" height="240" controls *ngIf="file.isVideo">
+                                <source src="{{file.file}}" type="video/mp4">
+                                <source src="{{file.file}}" type="video/ogg">
+                                Your browser does not support the video tag.
+                            </video>
+                        </ng-container>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <div class="card-footer">
+
+            <div class="mb-2">
+                <ng-container *ngFor="let image of chat.images; let index = index">
+
+                    <img src="{{image?.file}}" alt="Admin" height="150" width="150">
+                    <i class="fa fa-times" aria-hidden="true" (click)="removeFile(index, 'IMAGE')"></i>
+                </ng-container>
+                <ng-container *ngFor="let file of chat.files; let index = index">
+
+                    <div class="chip" *ngIf="!file.isVideo">
+                        {{file?.fileName}}
+                        <span class="closebtn" (click)="removeFile(index, 'FILE')">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <ng-container *ngIf="file.isVideo">
+                        <video width="320" height="240" controls>
+                            <source src="{{file.file}}" type="video/mp4">
+                            <source src="{{file.file}}" type="video/ogg">
+                            Your browser does not support the video tag.
+                        </video>
+                        <span class="closebtn" (click)="removeFile(index, 'FILE')">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </span>
+                    </ng-container>
+                </ng-container>
+            </div>
+            <div class="input-group">
+                <textarea name="" class="form-control type_msg" placeholder="Type your message..."
+                    [(ngModel)]="chat.message" (keyup)="messageTyping($event)"></textarea>
+                <div class="input-group-append">
+                    <span class="input-group-text d-block icons p-2 pb-4">
+                        <i class="fa fa-smile-o d-block" (click)="isEmojiPickerVisible = !isEmojiPickerVisible;"></i>
+                        <i class="fa fa-picture-o d-block" (click)="clickFilebutton('IMAGE')"></i>
+                        <i class="fa fa-paperclip d-block" (click)="clickFilebutton('DOCS')"></i>
+                        <input style="display: none;" id="imageFile" class="file-btn" type="file" multiple="true"
+                            (change)="handleFileInput($event)" />
+                    </span>
+                </div>
+                <div class="input-group-append">
+                    <span class="input-group-text icons">
+                        <i class="fa fa-paper-plane-o d-block pt-2" (click)="sendMessage()"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="float-right">
+                <emoji-mart class="emoji-mart" *ngIf="isEmojiPickerVisible" (emojiSelect)="addEmoji($event)"
+                    title="Choose your emoji"></emoji-mart>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!chatService.receiver && !chatService.room">
+        <div class="text-center p-5">
+            <div>
+                <img src="./assets/images/no_profilepic.png" class="rounded-circle user_img">
+            </div>
+            <h4 class="text-center">Welcome {{userName}}</h4>
+        </div>
+    </ng-container>
+</div>
